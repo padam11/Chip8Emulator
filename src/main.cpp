@@ -1,6 +1,6 @@
 #include "Chip8.hpp"
 #include "Platform.hpp"
-#include <SDL2/SDL.h>
+#include </Users/rohanbuch/Library/Frameworks/SDL2.framework/Versions/A/Headers/SDL.h>
 #include <chrono>
 #include <iostream>
 

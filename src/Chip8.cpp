@@ -5,9 +5,10 @@
 #include <chrono>
 #include <cstring>
 
-const unsigned int START_ADDRESS = 0x200;
+//const unsigned int START_ADDRESS = 0x200; fixed error
 const unsigned int FONTSET_START_ADDRESS = 0x50;
 const unsigned int START_ADDRESS = 0x200;
+const unsigned int FONTSET_SIZE = 80; //forgot to add this
 uint8_t fontset[FONTSET_SIZE] =
 {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -88,7 +89,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         tableF[0x65] = &Chip8::OP_Fx65;
     }
 
-    void Chip8::LoadROM(char const* filename)
+    void Chip8::LoadRom(char const* filename) //LoadRom, not LoadROM
     {
         std::ifstream file(filename, std::ios::binary);
 
@@ -131,22 +132,22 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
     void Chip8::Table0()
     {
-        ((.this).*(table0[opcode & 0x000Fu]))();
+        ((*this).*(table0[opcode & 0x000Fu]))(); //it's star, not dot.
     }
 
     void Chip8::Table8()
     {
-        ((.this).*(table8[opcode & 0x000Fu]))();
+        ((*this).*(table8[opcode & 0x000Fu]))();
     }
 
     void Chip8::TableE()
     {
-        ((.this).*(tableE[opcode & 0x000Fu]))();
+        ((*this).*(tableE[opcode & 0x000Fu]))();
     }
 
     void Chip8::TableF()
     {
-        ((.this).*(tableF[opcode & 0x000FFu]))();
+        ((*this).*(tableF[opcode & 0x000FFu]))();
     }
 
     void Chip8::OP_NULL()
@@ -175,12 +176,9 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
     {
         uint16_t address = opcode & 0x0FFFu;
         
+        stack[sp] = pc; //push current program counter to stack
+        ++sp; //increment stack pointer
         pc = address;
-    }
-
-    void Chip8::OP_2nnn()
-    {
-        uint16_t address = opcode & 0x0FFFu;
     }
 
     void Chip8::OP_3xkk()
@@ -188,7 +186,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         uint8_t kk = opcode & 0x00FFu;
 
-        if (registers[Vx] == byte)
+        if (registers[Vx] == kk)
         {
             pc += 2;
         }
@@ -199,7 +197,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         uint8_t kk = opcode & 0x00FFu;
 
-        if (registers[Vx] != byte)
+        if (registers[Vx] != kk)
         {
             pc += 2;
         }
@@ -401,7 +399,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         //uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
-        if (keyboard[registers[Vx]]) //keypad
+        if (keypad[registers[Vx]]) //keypad
         {
             pc += 2;
         }
@@ -412,7 +410,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         //uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
-        if (!keyboard[registers[Vx]]) //keypad
+        if (!keypad[registers[Vx]]) //keypad
         {
             pc += 2;
         }
@@ -433,7 +431,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
         for (uint8_t i = 0; i < 16; i++)
         {
-            if (keyboard[i])
+            if (keypad[i])
             {
                 registers[Vx] = i;
                 break;

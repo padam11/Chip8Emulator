@@ -22,18 +22,18 @@ class Chip8
 
 
     private:
-        uint8_t registers[16]{}; //all the important components of CHIP8
-        uint8_t memory[4096]{}; //memory of chip8!
+        uint8_t registers[REGISTER_COUNT]{}; //all the important components of CHIP8
+        uint8_t memory[MEMORY_SIZE]{}; //memory of chip8!
         uint16_t index{};
         uint16_t pc{};
         uint16_t stack[16]{};
         uint8_t sp{};
-        uint8_t sp{};
+        //uint8_t sp{}; fixed ERROR: duplicate member.
         uint8_t delayTimer{};
-        uint8_t soundTimder{};
-        uint8_t keypad[16]{};
-        uint32_t video[64 * 32]{};
-        uint16_t opcode;
+        uint8_t soundTimer{};
+        //uint8_t keypad[16]{}; fixed ERROR: duplicate member.
+        //uint32_t video[64 * 32]{}; fixed ERROR: duplicate member.
+        uint16_t opcode{};
 
         void Table0();
         void Table8();
@@ -77,15 +77,15 @@ class Chip8
         void OP_Fx55(); //store registers V0 to Vx in memory starting at location I
         void OP_Fx65(); //read registers V0 to Vx from memory starting at location I
 
-        uint8_t memory[MEMORY_SIZE]{};
-        uint8_t registers[REGISTER_COUNT]{};
-        uint16_t index{};
-        uint16_t pc{};
-        uint8_t delayTimer{};
-        uint8_t soundTimer{};
-        uint16_t stack[STACK_LEVELS]{};
-        uint8_t sp{};
-        uint16_t opcode{};
+        //uint8_t memory[MEMORY_SIZE]{};
+        //uint8_t registers[REGISTER_COUNT]{};
+        //uint16_t index{};
+        //uint16_t pc{};
+        //uint8_t delayTimer{};
+        //uint8_t soundTimer{};
+        //uint16_t stack[STACK_LEVELS]{};
+        //uint8_t sp{};
+        //uint16_t opcode{};
 
         std::default_random_engine randGen; //one of the instructions asks for random. this can be achieved physically
         //with a dedicated RNG chip. but for now, we'll use this.

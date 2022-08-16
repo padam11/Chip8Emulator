@@ -1,36 +1,24 @@
 #include "Platform.hpp"
-#include <SDL2/SDL.h>
+#include </Users/rohanbuch/Library/Frameworks/SDL2.framework/Versions/A/Headers/SDL.h>
 //#include <SDL2_audio.h>
 
 Platform::Platform(char const* title, int windowWidth, int windowHeight, int textureWidth, int textureHeight)
 {
-    SDL_INIT(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO); //INIT or Init?
 
     window = SDL_CreateWindow(title, 0, 0, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
-    if (window == nullptr)
-    {
-        SDL_ERROR("SDL_CreateWindow");
-        exit(1);
-    }
+    
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr)
-    {
-        SDL_ERROR("SDL_CreateRenderer");
-        exit(1);
-    }
+    
 
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, textureWidth, textureHeight);
-    if (texture == nullptr)
-    {
-        SDL_ERROR("SDL_CreateTexture");
-        exit(1);
-    }
+    
 
     
 }
 
-Platform:~Platform()
+Platform::~Platform()
 {
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
@@ -46,7 +34,7 @@ void Platform::Update(void const* buffer, int pitch)
     SDL_RenderPresent(renderer);
 }
 
-bool Platform::ProcessInput(uint8_t keys)
+bool Platform::ProcessInput(uint8_t* keys)
 {
     bool quit = false;
 
@@ -244,15 +232,15 @@ bool Platform::ProcessInput(uint8_t keys)
     return quit;
 }
 
-void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
-{
-    Sint16 *buffer = (Sint16*)raw_buffer;
-    int length = bytes / 2; // 2 bytes per sample for AUDIO_S16SYS
-    int &sample_nr(*(int*)user_data);
+//void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
+//{
+    //Sint16 *buffer = (Sint16*)raw_buffer;
+    //int length = bytes / 2; // 2 bytes per sample for AUDIO_S16SYS
+    //int &sample_nr(*(int*)user_data);
 
-    for(int i = 0; i < length; i++, sample_nr++)
-    {
-        double time = (double)sample_nr / (double)SAMPLE_RATE;
-        buffer[i] = (Sint16)(AMPLITUDE * sin(2.0f * M_PI * 441.0f * time)); // render 441 HZ sine wave
-    }
-}
+    //for(int i = 0; i < length; i++, sample_nr++)
+    //{
+        //double time = (double)sample_nr / (double)SAMPLE_RATE;
+        //buffer[i] = (Sint16)(AMPLITUDE * sin(2.0f * M_PI * 441.0f * time)); // render 441 HZ sine wave
+    //}
+//}
