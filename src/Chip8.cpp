@@ -38,7 +38,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
             //memory[i] = 0;
         //}
 
-        for (unsigned int i = 0; i < FONTSET_START_ADDRESS; i++)
+        for (unsigned int i = 0; i < FONTSET_SIZE; ++i) //fontset size not fontset start lol
         {
             memory[FONTSET_START_ADDRESS + i] = fontset[i];
         }
@@ -61,6 +61,13 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         table[0xD] = &Chip8::OP_Dxyn;
         table[0xE] = &Chip8::TableE;
         table[0xF] = &Chip8::TableF;
+
+        for (size_t i = 0; i < 0xE; i++) // forgot to add this
+        {
+            table0[i] = &Chip8::OP_NULL;
+            table8[i] = &Chip8::OP_NULL;
+            tableE[i] = &Chip8::OP_NULL;
+        }
 
         table0[0x0] = &Chip8::OP_00E0;
         table0[0xE] = &Chip8::OP_00EE;
@@ -147,7 +154,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
     void Chip8::TableF()
     {
-        ((*this).*(tableF[opcode & 0x000FFu]))();
+        ((*this).*(tableF[opcode & 0x00FFu]))();
     }
 
     void Chip8::OP_NULL()
@@ -375,10 +382,10 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
         registers[0xF] = 0;
 
-        for (uint8_t y = 0; y < n; y++)
+        for (unsigned int y = 0; y < n; y++)
         {
             uint8_t sprite = memory[index + y];
-            for (uint8_t x = 0; x < 8; x++)
+            for (unsigned int x = 0; x < 8; x++)
             {
                 uint8_t pixel = (sprite & (0x80u >> x));
                 uint32_t* screenPixel = &video[(yPos + y) * VIDEO_WIDTH + (xPos + x)];
@@ -426,16 +433,87 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
     void Chip8::OP_Fx0A()
     {
-        uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+        //uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         //uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
-        for (uint8_t i = 0; i < 16; i++)
+        //for (uint8_t i = 0; i < 16; i++)
+        //{
+            //if (keypad[i])
+            //{
+                //registers[Vx] = i;
+                //break;
+            //}
+        //}
+
+        uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+
+        if (keypad[0])
         {
-            if (keypad[i])
-            {
-                registers[Vx] = i;
-                break;
-            }
+            registers[Vx] = 0;
+        }
+        else if (keypad[1])
+        {
+            registers[Vx] = 1;
+        }
+        else if (keypad[2])
+        {
+            registers[Vx] = 2;
+        }
+        else if (keypad[3])
+        {
+            registers[Vx] = 3;
+        }
+        else if (keypad[4])
+        {
+            registers[Vx] = 4;
+        }
+        else if (keypad[5])
+        {
+            registers[Vx] = 5;
+        }
+        else if (keypad[6])
+        {
+            registers[Vx] = 6;
+        }
+        else if (keypad[7])
+        {
+            registers[Vx] = 7;
+        }
+        else if (keypad[8])
+        {
+            registers[Vx] = 8;
+        }
+        else if (keypad[9])
+        {
+            registers[Vx] = 9;
+        }
+        else if (keypad[10])
+        {
+            registers[Vx] = 10;
+        }
+        else if (keypad[11])
+        {
+            registers[Vx] = 11;
+        }
+        else if (keypad[12])
+        {
+            registers[Vx] = 12;
+        }
+        else if (keypad[13])
+        {
+            registers[Vx] = 13;
+        }
+        else if (keypad[14])
+        {
+            registers[Vx] = 14;
+        }
+        else if (keypad[15])
+        {
+            registers[Vx] = 15;
+        }
+        else
+        {
+            pc -= 2;
         }
     }
 
