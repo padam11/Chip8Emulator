@@ -62,12 +62,12 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         table[0xE] = &Chip8::TableE;
         table[0xF] = &Chip8::TableF;
 
-        for (size_t i = 0; i < 0xE; i++) // forgot to add this
-        {
-            table0[i] = &Chip8::OP_NULL;
-            table8[i] = &Chip8::OP_NULL;
-            tableE[i] = &Chip8::OP_NULL;
-        }
+        //for (size_t i = 0; i < 0xE; i++) // forgot to add this
+        //{
+            //table0[i] = &Chip8::OP_NULL;
+            //table8[i] = &Chip8::OP_NULL;
+            //tableE[i] = &Chip8::OP_NULL;
+        //}
 
         table0[0x0] = &Chip8::OP_00E0;
         table0[0xE] = &Chip8::OP_00EE;
@@ -84,6 +84,11 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
         tableE[0x1] = &Chip8::OP_ExA1;
         tableE[0xE] = &Chip8::OP_Ex9E;
+
+        //for (size_t i = 0; i <= 0x65; i++)
+        //{
+            //tableF[i] = &Chip8::OP_NULL;
+        //}
 
         tableF[0x07] = &Chip8::OP_Fx07;
         tableF[0x0A] = &Chip8::OP_Fx0A;
@@ -105,7 +110,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
             std::streampos size = file.tellg(); //get size of file and allocate a buffer
             char* buffer = new char[size];
 
-            file.seekg(0); //go to beginning of file
+            file.seekg(0, std::ios::beg); //go to beginning of file std::ios::beg
             file.read(buffer, size); //read file into buffer
             file.close(); //close file
 
@@ -124,7 +129,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
 
         pc += 2; //increment before execution
 
-        ((*this).*(table[(opcode & 0xF000) >> 12u]))(); //decode and execute
+        ((*this).*(table[(opcode & 0xF000u) >> 12u]))(); //decode and execute
 
         if (delayTimer > 0) //if set, decrement
         {
@@ -310,7 +315,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         //uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
-        registers[0xF] = registers[Vx] & 0x01u;
+        registers[0xF] = registers[Vx] & 0x1u; //0x1u not 0x01u
         registers[Vx] >>= 1;
     }
 
@@ -566,7 +571,7 @@ Chip8::Chip8() : randGen(std::chrono::system_clock::now().time_since_epoch().cou
         uint8_t Vx = (opcode & 0x0F00u) >> 8u;
         //uint8_t Vy = (opcode & 0x00F0u) >> 4u;
 
-        for (uint8_t i = 0; i <= Vx; i++)
+        for (uint8_t i = 0; i <= Vx; ++i)
         {
             memory[index + i] = registers[i];
         }

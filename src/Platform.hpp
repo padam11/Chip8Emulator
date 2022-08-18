@@ -13,9 +13,9 @@ class Platform
         ~Platform();
         void Update(void const* buffer, int pitch);
         bool ProcessInput(uint8_t* keys);
-        void audio_callback(void* userdata, uint8_t* stream, int bytes);
-        SDL_Window* window;
-        SDL_Renderer* renderer;
-        SDL_Texture* texture;
+        //void audio_callback(void* userdata, uint8_t* stream, int bytes);
+        SDL_Window* window{};
+        SDL_Renderer* renderer{};
+        SDL_Texture* texture{};
     
 };

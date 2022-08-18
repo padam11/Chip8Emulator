@@ -26,7 +26,7 @@ class Chip8
         uint8_t memory[MEMORY_SIZE]{}; //memory of chip8!
         uint16_t index{};
         uint16_t pc{};
-        uint16_t stack[16]{};
+        uint16_t stack[STACK_LEVELS]{};
         uint8_t sp{};
         //uint8_t sp{}; fixed ERROR: duplicate member.
         uint8_t delayTimer{};
